@@ -1,3 +1,22 @@
+WT - FeedHenry JavaScript SDK
+========================
+
+## Pull Requests
+
+Be sure for each pull request that the base branch is WT and not the original FeedHenry repo.
+
+## Version Branches
+
+Version branches (ex. version-1.1.1) should be based off of the main develop branch. After development on the version is complete, tag the branch and merge it back into develop.
+
+## Release Branches
+
+To release a new version:
+1. Create a branch off of the current version branch (ex. release-1.1.1).
+2. Run `npm run build`.
+3. Force add the entire `dist` folder and any changes to the `libs` folder. (To make this easier, remove `dist` and `libs` from the .gitignore before adding files)
+4. Rebuild the latest version of https://github.com/willowtreeapps/fh-js-sdk with the new version of fh-sync-js.
+
 FeedHenry Sync Javascript client
 ========================
 
