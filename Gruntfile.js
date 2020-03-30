@@ -1,16 +1,16 @@
-var path = require('path');
+var path = require("path");
 var fs = require("fs");
 var exists = fs.existsSync || path.existsSync;
 var async = require("async");
-var through = require('through');
+var through = require("through");
 
 module.exports = function(grunt) {
-  var pkg = grunt.file.readJSON('package.json');
+  var pkg = grunt.file.readJSON("package.json");
   grunt.initConfig({
     pkg: pkg,
     meta: {},
     jshint: {
-      all: ['src/**/*.js'],
+      all: ["src/**/*.js"],
       options: {
         curly: true,
         eqeqeq: true,
@@ -33,7 +33,7 @@ module.exports = function(grunt) {
         dest: "libs/generated/lawnchair.js"
       },
       crypto: {
-        src:[
+        src: [
           "libs/cryptojs/cryptojs-core.js",
           "libs/cryptojs/cryptojs-enc-base64.js",
           "libs/cryptojs/cryptojs-cipher-core.js",
@@ -48,21 +48,17 @@ module.exports = function(grunt) {
         dest: "libs/generated/crypto.js"
       }
     },
-    'mocha_phantomjs': {
+    mocha_phantomjs: {
       test: {
         options: {
-          urls: [
-            "http://127.0.0.1:8200/test/browser/index.html?url=http://localhost:9999",
-          ]
+          urls: ["http://127.0.0.1:8200/test/browser/index.html?url=http://localhost:9999"]
         }
       },
       test_coverage: {
-        options:{
+        options: {
           reporter: "json-cov",
-          file: 'rep/coverage.json',
-          urls: [
-            "http://127.0.0.1:8200/test/browser/index.html?url=http://localhost:9999&coverage=1"
-          ]
+          file: "rep/coverage.json",
+          urls: ["http://127.0.0.1:8200/test/browser/index.html?url=http://localhost:9999&coverage=1"]
         }
       }
     },
@@ -71,7 +67,7 @@ module.exports = function(grunt) {
         options: {
           hostname: "*",
           port: 8200,
-          base: '.'
+          base: "."
         }
       }
     },
@@ -80,21 +76,21 @@ module.exports = function(grunt) {
       // UMD (universal module definition) and can be used via an AMD module
       // loader like RequireJS or by simply placing a script tag in the page,
       // which registers fhsync as a global var (the module itself registers as $fh.sync as well).
-      dist:{
+      dist: {
         //shim is defined inside package.json
-        src:['src/index.js'],
-        dest: 'dist/fh-sync.js',
+        src: ["src/index.js"],
+        dest: "dist/fh-sync.js",
         options: {
-          standalone: 'fhsync'
+          standalone: "fhsync"
         }
       },
       // This browserify build can be required by other browserify  that
       // have been created with an --external parameter.
       require: {
-        src:['src/index.js'],
-        dest: 'test/browser/fh-sync-latest-require.js',
+        src: ["src/index.js"],
+        dest: "test/browser/fh-sync-latest-require.js",
         options: {
-          alias:['./src/sync-client.js']
+          alias: ["./src/sync-client.js"]
         }
       },
       // These are the browserified tests. We need to browserify the tests to be
@@ -103,19 +99,19 @@ module.exports = function(grunt) {
       // code). This build will also include the testing libs chai, sinon and
       // sinon-chai but must not include the module under test.
       test: {
-        src: [ './test/browser/suite.js' ],
-        dest: './test/browser/browserified_tests.js',
+        src: ["./test/browser/suite.js"],
+        dest: "./test/browser/browserified_tests.js",
         options: {
-          external: [ './src/index.js' ],
+          external: ["./src/index.js"],
           // Embed source map for tests
           debug: true
         }
-      },
+      }
     },
     watch: {
       browserify: {
-        files: ['src/**/*.js', 'test/tests/*.js'],
-        tasks: ['browserify'],
+        files: ["src/**/*.js", "test/tests/*.js"],
+        tasks: ["browserify"],
         options: {
           spawn: false
         }
@@ -123,29 +119,35 @@ module.exports = function(grunt) {
     },
     uglify: {
       dist: {
-        "files": {
-          'dist/fh-sync.min.js': ['dist/fh-sync.js'],
+        files: {
+          "dist/fh-sync.min.js": ["dist/fh-sync.js"]
         }
       }
-    },
+    }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-qunit');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-mocha-phantomjs');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-shell');
-  grunt.loadNpmTasks('grunt-text-replace');
+  grunt.loadNpmTasks("grunt-contrib-qunit");
+  grunt.loadNpmTasks("grunt-contrib-jshint");
+  grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-connect");
+  grunt.loadNpmTasks("grunt-browserify");
+  grunt.loadNpmTasks("grunt-mocha-phantomjs");
+  grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks("grunt-shell");
+  grunt.loadNpmTasks("grunt-text-replace");
 
   //run tests in phatomjs
-  grunt.registerTask('test', ['jshint:all', 'browserify:dist', 'browserify:require', 'browserify:test', 'connect:server', 'mocha_phantomjs:test']);
+  // TODO re-add task 'mocha_phantomjs:test'
+  grunt.registerTask("test", [
+    "jshint:all",
+    "browserify:dist",
+    "browserify:require",
+    "browserify:test",
+    "connect:server"
+  ]);
 
-  grunt.registerTask('concat-core-sdk', ['jshint',  'concat:lawnchair', 'concat:crypto', 'browserify:dist']);
+  grunt.registerTask("concat-core-sdk", ["jshint", "concat:lawnchair", "concat:crypto", "browserify:dist"]);
 
-
-  grunt.registerTask('default', ['jshint', 'concat-core-sdk', 'test','uglify:dist']);
+  grunt.registerTask("default", ["jshint", "concat-core-sdk", "test", "uglify:dist"]);
 };
